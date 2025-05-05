@@ -72,7 +72,7 @@ namespace SendMails
             String Password = txtPassword.Text.Trim();
 
             string hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password);
-           // myUser.InsertPassword(UserName, hashedPassword);
+            myUser.InsertPassword(UserName, hashedPassword);
 
             bool success = myUser.LoginUser(UserName, Password);
 
@@ -103,6 +103,55 @@ namespace SendMails
             {
                 btnLogin.PerformClick();
             }
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+            PasswordReset myPassRst = new PasswordReset();
+            myPassRst.Show();
+            this.Hide();
+
+        }
+
+        private void txtPassword_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void panel2_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel3_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void panel4_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

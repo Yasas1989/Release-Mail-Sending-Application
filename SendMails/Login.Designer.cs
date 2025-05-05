@@ -41,6 +41,7 @@ namespace SendMails
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,6 +62,7 @@ namespace SendMails
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.Size = new System.Drawing.Size(194, 22);
             this.txtPassword.TabIndex = 12;
+            this.txtPassword.TextChanged += new System.EventHandler(this.txtPassword_TextChanged);
             this.txtPassword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPassword_KeyPress);
             // 
             // label2
@@ -72,6 +74,7 @@ namespace SendMails
             this.label2.Size = new System.Drawing.Size(92, 21);
             this.label2.TabIndex = 13;
             this.label2.Text = "Password -";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label1
             // 
@@ -82,6 +85,7 @@ namespace SendMails
             this.label1.Size = new System.Drawing.Size(103, 21);
             this.label1.TabIndex = 14;
             this.label1.Text = "User Name -";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // btnLogin
             // 
@@ -105,6 +109,7 @@ namespace SendMails
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(454, 35);
             this.panel1.TabIndex = 16;
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel1_MouseDown);
             // 
             // button1
@@ -129,6 +134,7 @@ namespace SendMails
             this.label3.Size = new System.Drawing.Size(126, 29);
             this.label3.TabIndex = 1;
             this.label3.Text = "User Login";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // btnClose
             // 
@@ -150,6 +156,7 @@ namespace SendMails
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(3, 280);
             this.panel2.TabIndex = 17;
+            this.panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.panel2_Paint);
             // 
             // panel3
             // 
@@ -159,6 +166,7 @@ namespace SendMails
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(3, 280);
             this.panel3.TabIndex = 18;
+            this.panel3.Paint += new System.Windows.Forms.PaintEventHandler(this.panel3_Paint);
             // 
             // panel4
             // 
@@ -168,12 +176,25 @@ namespace SendMails
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(448, 3);
             this.panel4.TabIndex = 19;
+            this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel4_Paint);
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(143, 270);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(184, 17);
+            this.linkLabel1.TabIndex = 20;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "Forgot or re - set Password.";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // Login
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(454, 315);
+            this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel2);
@@ -209,5 +230,6 @@ namespace SendMails
         private System.Windows.Forms.Panel panel4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.LinkLabel linkLabel1;
     }
 }

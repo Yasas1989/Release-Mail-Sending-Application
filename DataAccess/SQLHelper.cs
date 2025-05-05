@@ -80,24 +80,13 @@ namespace DataAccess
         {
             SqlCommand cmd = new SqlCommand();
             cmd = CreateCommand(sql, type);
-            //try
-            //{
-
             cmd.CommandType = type;
             cmd.CommandText = sql;
             cmd.Connection.Open();
             cmd.ExecuteNonQuery();
             cmd.Connection.Close();
             cmd.Connection.Dispose();
-            //}
-            //catch (Exception)
-            //{
-            //}
-            //finally
-            //{
-            //    cmd.Connection.Close();
-            //    cmd.Connection.Dispose();
-            //}
+         
         }
         #endregion
         #region Create Parameters

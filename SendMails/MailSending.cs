@@ -125,8 +125,8 @@ namespace SendMails
         {          
             try
             {
-                string fromEmail = "yasas@ftservices.net";
-                string fromPassword = "xyor bpvv kxxw frep";
+                string fromEmail = "";
+                string fromPassword = "";
                 string smtpServer = "smtp.gmail.com";
                 int smtpPort = 587;
            
@@ -191,8 +191,8 @@ namespace SendMails
         {
             try
             {
-                string fromEmail = "yasas@ftservices.net";
-                string fromPassword = "xyor bpvv kxxw frep";
+                string fromEmail = "";
+                string fromPassword = "";
                 string smtpServer = "smtp.gmail.com";
                 int smtpPort = 587;
 
