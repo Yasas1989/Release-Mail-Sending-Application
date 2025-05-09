@@ -19,8 +19,13 @@ namespace DataAccess
 
         public static string connectionstring()
         {
-            //strConnection = @"Data Source=192.168.0.205;Initial Catalog=EstDataCaptureHeadOffice;Persist Security Info=True;User ID=sa;Password=bplhead123@#;";
-            strConnection = @"Data Source=YASAS\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
+            //Yasas
+            //strConnection = @"Data Source=YASAS\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
+            //Sarangi
+            //strConnection = @"Data Source=DESKTOP-RG644LQ\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
+            //Ruwanji
+             strConnection = @"Data Source=DESKTOP-P28L1E0\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
+
             return strConnection;
         }
 

@@ -15,6 +15,7 @@ namespace SendMails
     public partial class Login : Form
     {
         BusinessLayer.User myUser = new BusinessLayer.User();
+        BusinessLayer.GetMails myGetMail = new BusinessLayer.GetMails();
         
         public Login()
         {
@@ -71,20 +72,32 @@ namespace SendMails
             String UserName = txtUserName.Text.Trim();
             String Password = txtPassword.Text.Trim();
 
-            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password);
-            myUser.InsertPassword(UserName, hashedPassword);
-
-            bool success = myUser.LoginUser(UserName, Password);
-
-            if (success)
+            if(txtUserName.Text.Length == 0)
             {
-                MailSending myMailSend = new MailSending();
-                myMailSend.Show();
-                this.Hide();
+                MessageBox.Show("Enter User Name....!");
+            }
+            if (txtPassword.Text.Length == 0)
+            {
+                MessageBox.Show("Enter Password....!");
             }
             else
             {
-                MessageBox.Show("Login Failed....!");
+                string hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password);
+                //myUser.InsertPassword(UserName, hashedPassword);
+
+                bool success = myUser.LoginUser(UserName, Password);
+
+                if (success)
+                {
+                    myUser.CheckValidEmail(UserName);
+                    MailSending myMailSend = new MailSending();
+                    myMailSend.Show();
+                    this.Hide();
+                }
+                else
+                {
+                    MessageBox.Show("Login Failed....!");
+                }
             }
 
         }
@@ -116,7 +129,7 @@ namespace SendMails
 
         private void txtPassword_TextChanged(object sender, EventArgs e)
         {
-
+            txtPassword.PasswordChar = '*';
         }
 
         private void label2_Click(object sender, EventArgs e)

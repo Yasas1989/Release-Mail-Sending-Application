@@ -13,6 +13,7 @@ namespace SendMails
     public partial class PasswordReset : Form
     {
         BusinessLayer.User myUser = new BusinessLayer.User();
+
         public PasswordReset()
         {
             InitializeComponent();
@@ -20,7 +21,7 @@ namespace SendMails
 
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
-          
+
         }
 
         private void txtUserName_KeyPress(object sender, KeyPressEventArgs e)
@@ -57,7 +58,7 @@ namespace SendMails
                 MessageBox.Show("Code has been sent to your Email....!");
                 button2.Enabled = false;
                 button2.Visible = false;
-               
+
             }
             else
             {
@@ -73,16 +74,16 @@ namespace SendMails
             string result = myUser.ValidateResetCode(ResetCode);
             bool success = !string.IsNullOrWhiteSpace(result);
 
-            if(result == "NRRF")
+            if (result == "NRRF")
             {
                 MessageBox.Show("No reset request found..!");
             }
-            else if(result == "IC")
-            {                
+            else if (result == "IC")
+            {
                 MessageBox.Show("Invalid code.");
             }
             else if (result == "CE")
-            {               
+            {
                 MessageBox.Show("Code expired..!");
             }
             else
@@ -146,6 +147,48 @@ namespace SendMails
             {
                 btnReset.PerformClick();
             }
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            String UserName = txtUserName.Text.Trim();
+            String Password = txtConfirmPass.Text.Trim();
+
+            if (txtNewPass.Text.Length == 0)
+            {
+                MessageBox.Show("Enter Password to Proceed....!");
+            }
+            if (txtConfirmPass.Text.Length == 0)
+            {
+                MessageBox.Show("Confirm Password cannot Empty....!");
+            }
+            else
+            {
+                if (txtNewPass.Text == txtConfirmPass.Text)
+                {
+                    string hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password);
+                    myUser.UpdatePassword(UserName, hashedPassword);
+                    MessageBox.Show("Your Password Successfully Changed...!");
+                    this.Close();
+                    Login myLog = new Login();
+                    myLog.Show();
+                    
+                }
+                else
+                {
+                    MessageBox.Show("Passwords are not matching....!");
+                }
+            }
+        }
+
+        private void txtNewPass_TextChanged(object sender, EventArgs e)
+        {
+            txtNewPass.PasswordChar = '*';
+        }
+
+        private void txtConfirmPass_TextChanged(object sender, EventArgs e)
+        {
+            txtConfirmPass.PasswordChar = '*';
         }
     }
 }

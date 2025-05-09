@@ -14,7 +14,12 @@ namespace BusinessLayer
 {
     public class User
     {
-        public static String StatEmail { get; set; }
+        public static String StatEmail { get; set; } = String.Empty;
+
+        public static String StatAppPassword { get; set; } = String.Empty;
+
+        public static String StatUserName { get; set; } = String.Empty;
+
         public bool LoginUser(string username, string password)
         {
             string storedHash = null;
@@ -27,7 +32,6 @@ namespace BusinessLayer
                 {
                     storedHash = reader.GetString(0);
                     isValid = BCrypt.Net.BCrypt.Verify(password, storedHash);
-
                 }
                 else
                 {
@@ -42,25 +46,47 @@ namespace BusinessLayer
         {
             SQLHelper.ExecuteNonQuery("INSERT INTO Users (Username, PasswordHash) VALUES ('" + UserName + "', '" + hashedPassword + "')", CommandType.Text);
         }
+        public void UpdatePassword(String UserName, String hashedPassword)
+        {
+            SQLHelper.ExecuteNonQuery("UPDATE Users SET PasswordHash = '" + hashedPassword + "' WHERE Username = '" + UserName + "'", CommandType.Text);
+        }
 
         public String CheckValidEmail(string UserName)
         {
             String Email = String.Empty;
+            String ApPass = String.Empty;
+            String Usrname = String.Empty;
+
             SqlDataReader reader;
-            reader = DataAccess.SQLHelper.ExecuteReader("SELECT Email, Username FROM     dbo.Users WHERE  Username = '" + UserName + "'", CommandType.Text);
+            reader = DataAccess.SQLHelper.ExecuteReader("SELECT Email, Username, AppPassword FROM     dbo.Users WHERE  Username = '" + UserName + "'", CommandType.Text);
             while (reader.Read())
             {
                 if (!reader.IsDBNull(0))
                 {
                     //Email = reader.GetString(0);
-                    Email = reader.GetString(0);
+                    Email = reader.GetString(0).Trim();
                     StatEmail = Email;
-
                 }
+                if (!reader.IsDBNull(1))
+                {
+                    string rawName = reader.GetString(1).Trim();
+                    Usrname = char.ToUpper(rawName[0]) + rawName.Substring(1);
+                    StatUserName = Usrname;
+                }
+                if (!reader.IsDBNull(2))
+                {
+                    //Email = reader.GetString(0);
+                    ApPass = reader.GetString(2).Trim();
+                    StatAppPassword = ApPass;
+                }
+                
+
+
             }
             return Email;
 
         }
+     
         public void SendPasswordResetCode(string UserName)
         {
             //String Email = "";

@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data;
 using DataAccess;
+using System.Net.Mail;
+using System.Net;
 
 namespace BusinessLayer
 {
     public class GetMails
     {
-        public string ShortCode { get; set; }
-        public int Code { get; set; }  
-
-
+        BusinessLayer.User myUser = new BusinessLayer.User();       
+     
         public DataSet ListPlantations()
         {
 
@@ -29,6 +29,10 @@ namespace BusinessLayer
         public void UpdateLatestVersion(Decimal LastVersion, String ModuleShortCode)
         {
             SQLHelper.ExecuteNonQuery("Update dbo.ModuleDetails set LastVersionNumber = '" + LastVersion + "' where ModuleShortCode =  '" + ModuleShortCode + "'", CommandType.Text);
+        }
+        public void UpdateLatestBuild(String LatestBuild, String ModuleShortCode)
+        {
+            SQLHelper.ExecuteNonQuery("Update dbo.ModuleDetails set BuildNumber = '" + LatestBuild + "' where ModuleShortCode =  '" + ModuleShortCode + "'", CommandType.Text);
         }
 
         public DataSet ListModule(String Code)
@@ -60,6 +64,234 @@ namespace BusinessLayer
             return Version;
         }
 
+        public String getLastBuild(String ModuleShortCode)
+        {
+            String Build = "";
+            SqlDataReader reader = SQLHelper.ExecuteReader("SELECT BuildNumber, Code, ModuleName, ModuleShortCode FROM     dbo.ModuleDetails WHERE  (ModuleShortCode = '" + ModuleShortCode + "')", CommandType.Text);
+            while (reader.Read())
+            {
+                if (!reader.IsDBNull(0))
+                {
+                    Build = reader.GetString(0).Trim();
+                }
+
+                string[] parts = Build.Split('_');
+                if (int.TryParse(parts.Last(), out int lastNumber))
+                {
+                    lastNumber += 1;
+                    parts[parts.Length - 1] = lastNumber.ToString();
+                    string newValue = string.Join("_", parts);
+
+                    Build = newValue; // Bind to your TextBox
+                }
+
+            }
+            return Build;
+        }
+
+        public bool SendEmailPayroll(List<string> toEmails, List<string> ccEmails, String ModuleName, Decimal LastVersion, String PlantationName, String BodySubject)
+        {
+
+            try
+            {
+                //string fromEmail = "yasas@ftservices.net";
+                //string fromPassword = "xyor bpvv kxxw frep";               
+                string fromEmail = $"{User.StatEmail}";               
+                string fromPassword = $"{User.StatAppPassword}";
+                string smtpServer = "smtp.gmail.com";
+                int smtpPort = 587;
+
+                using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
+                {
+                    smtpClient.Credentials = new NetworkCredential(fromEmail, fromPassword);
+                    smtpClient.EnableSsl = true;
+                    smtpClient.ServicePoint.MaxIdleTime = 2 * 60 * 1000; // Keep SMTP connection alive
+                    smtpClient.ServicePoint.ConnectionLimit = 10; // Allow multiple connections
+
+                    // Split based on period + space + capital letter
+                    string[] sentences = System.Text.RegularExpressions.Regex.Split(BodySubject, @"(?<=[.?!])\s+(?=[A-Z])");
+                    // Add bullets
+                    StringBuilder formatted = new StringBuilder();
+                    formatted.Append("<ul>"); // Start list
+
+                    foreach (string sentence in sentences)
+                    {
+                        formatted.Append("<li>" + sentence.Trim() + "</li>");
+                    }
+                    formatted.Append("</ul>"); // End list                 
+
+                    MailMessage mail = new MailMessage
+                    {
+
+                        From = new MailAddress(fromEmail),
+                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release",
+
+                        Body =
+
+                        "<span style='font-family:Tahoma; font-size:17px; padding-left:0px;'>Dear All,<br>" +
+                        "<span style='padding-left:0px;'>There is a new update from OLAX Systems.</span><br><br>" +
+                        "<span style='padding-left:0px;'>Release Contains:</span><br><br>" +
+                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release </b> We have done some fine-tunings for:</span><br><br>" +
+                        "<ul style='margin-top:0px; margin-bottom:0px; '>" +
+                        $"{formatted}<br><br>" +
+                        "</ul>" +
+                        "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
+                        "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
+                        "<span style='padding-left:0px;'>OLAX Team",
+
+
+                        IsBodyHtml = true // Use true if sending HTML
+
+                    };
+
+                    foreach (var email in toEmails) mail.To.Add(email);
+                    foreach (var email in ccEmails) mail.CC.Add(email);
+
+                    smtpClient.Send(mail); // Blocking call, but handled inside ThreadPool
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Email Error: " + ex.Message);
+                return false;
+            }
+        }
+        public bool SendEmailCheckroll(List<string> toEmails, List<string> ccEmails, String ModuleName, String LatestBuild, String PlantationName, String BodySubject)
+        {
+
+            try
+            {
+                //string fromEmail = "yasas@ftservices.net";
+                //string fromPassword = "xyor bpvv kxxw frep";               
+                string fromEmail = $"{User.StatEmail}";
+                string fromPassword = $"{User.StatAppPassword}";
+                string smtpServer = "smtp.gmail.com";
+                int smtpPort = 587;
+
+                using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
+                {
+                    smtpClient.Credentials = new NetworkCredential(fromEmail, fromPassword);
+                    smtpClient.EnableSsl = true;
+                    smtpClient.ServicePoint.MaxIdleTime = 2 * 60 * 1000; // Keep SMTP connection alive
+                    smtpClient.ServicePoint.ConnectionLimit = 10; // Allow multiple connections
+
+                    // Split based on period + space + capital letter
+                    string[] sentences = System.Text.RegularExpressions.Regex.Split(BodySubject, @"(?<=[.?!])\s+(?=[A-Z])");
+                    // Add bullets
+                    StringBuilder formatted = new StringBuilder();
+                    formatted.Append("<ul>"); // Start list
+
+                    foreach (string sentence in sentences)
+                    {
+                        formatted.Append("<li>" + sentence.Trim() + "</li>");
+                    }
+                    formatted.Append("</ul>"); // End list                 
+
+                    MailMessage mail = new MailMessage
+                    {
+
+                        From = new MailAddress(fromEmail),
+                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release (Build {LatestBuild})",
+
+                        Body =
+
+                        "<span style='font-family:Tahoma; font-size:17px; padding-left:0px;'>Dear All,<br>" +
+                        "<span style='padding-left:0px;'>There is a new update from OLAX Systems.</span><br><br>" +
+                        "<span style='padding-left:0px;'>Release Contains:</span><br><br>" +
+                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release (Build {LatestBuild}) </b> We have done some fine-tunings for:</span><br><br>" +
+                        "<ul style='margin-top:0px; margin-bottom:0px; '>" +
+                        $"{formatted}<br><br>" +
+                        "</ul>" +
+                        "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
+                        "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
+                        "<span style='padding-left:0px;'>OLAX Team",
+
+
+                        IsBodyHtml = true // Use true if sending HTML
+
+                    };
+
+                    foreach (var email in toEmails) mail.To.Add(email);
+                    foreach (var email in ccEmails) mail.CC.Add(email);
+
+                    smtpClient.Send(mail); // Blocking call, but handled inside ThreadPool
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Email Error: " + ex.Message);
+                return false;
+            }
+        }
+        public bool SendEmail(List<string> toEmails, List<string> ccEmails, String ModuleName, Decimal LastVersion, String PlantationName, String BodySubject)
+        {
+            try
+            {
+                //string fromEmail = "yasas@ftservices.net";
+                //string fromPassword = "xyor bpvv kxxw frep";
+                string fromEmail = $"{User.StatEmail}";
+                string fromPassword = $"{User.StatAppPassword}";
+                string smtpServer = "smtp.gmail.com";
+                int smtpPort = 587;
+
+                using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
+                {
+                    smtpClient.Credentials = new NetworkCredential(fromEmail, fromPassword);
+                    smtpClient.EnableSsl = true;
+                    smtpClient.ServicePoint.MaxIdleTime = 2 * 60 * 1000; // Keep SMTP connection alive
+                    smtpClient.ServicePoint.ConnectionLimit = 10; // Allow multiple connections
+
+                    // Split based on period + space + capital letter
+                    string[] sentences = System.Text.RegularExpressions.Regex.Split(BodySubject, @"(?<=[.?!])\s+(?=[A-Z])");
+                    // Add bullets
+                    StringBuilder formatted = new StringBuilder();
+                    formatted.Append("<ul>"); // Start list
+
+                    foreach (string sentence in sentences)
+                    {
+                        formatted.Append("<li>" + sentence.Trim() + "</li>");
+                    }
+                    formatted.Append("</ul>"); // End list                 
+
+                    MailMessage mail = new MailMessage
+                    {
+
+                        From = new MailAddress(fromEmail),
+                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release V{LastVersion}",
+
+                        Body =
+
+                        "<span style='font-family:Tahoma; font-size:17px; padding-left:0px;'>Dear All,<br>" +
+                        "<span style='padding-left:0px;'>There is a new update from OLAX Systems.</span><br><br>" +
+                        "<span style='padding-left:0px;'>Release Contains:</span><br><br>" +
+                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release V {LastVersion}</b> We have done some fine-tunings for:</span><br><br>" +
+                        "<ul style='margin-top:0px; margin-bottom:0px; '>" +
+                        $"{formatted}<br><br>" +
+                        "</ul>" +
+                        "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
+                        "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
+                        "<span style='padding-left:0px;'>OLAX Team",
+
+
+                        IsBodyHtml = true // Use true if sending HTML
+
+                    };
+
+                    foreach (var email in toEmails) mail.To.Add(email);
+                    foreach (var email in ccEmails) mail.CC.Add(email);
+
+                    smtpClient.Send(mail); // Blocking call, but handled inside ThreadPool
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Email Error: " + ex.Message);
+                return false;
+            }
+        }
         public List<string> GetEmailAddressesFromDatabaseCC(string emailType)
         {
 

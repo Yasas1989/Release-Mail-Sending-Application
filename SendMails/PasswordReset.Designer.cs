@@ -193,6 +193,7 @@ namespace SendMails
             this.txtConfirmPass.Name = "txtConfirmPass";
             this.txtConfirmPass.Size = new System.Drawing.Size(194, 22);
             this.txtConfirmPass.TabIndex = 31;
+            this.txtConfirmPass.TextChanged += new System.EventHandler(this.txtConfirmPass_TextChanged);
             this.txtConfirmPass.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtConfirmPass_KeyPress);
             // 
             // lblCpass
@@ -233,6 +234,7 @@ namespace SendMails
             this.txtNewPass.Name = "txtNewPass";
             this.txtNewPass.Size = new System.Drawing.Size(194, 22);
             this.txtNewPass.TabIndex = 35;
+            this.txtNewPass.TextChanged += new System.EventHandler(this.txtNewPass_TextChanged);
             this.txtNewPass.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtNewPass_KeyPress);
             // 
             // btnReset
@@ -243,6 +245,7 @@ namespace SendMails
             this.btnReset.TabIndex = 36;
             this.btnReset.Text = "Change";
             this.btnReset.UseVisualStyleBackColor = true;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
             // 
             // PasswordReset
             // 
