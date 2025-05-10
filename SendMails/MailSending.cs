@@ -24,7 +24,8 @@ namespace SendMails
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.None;
-
+            gvEmails.RowHeadersVisible = false;
+           
         }
 
         //DataTable dtEmployeeDetails = new DataTable();
@@ -40,27 +41,27 @@ namespace SendMails
             Panel headerPanel = new Panel();
             headerPanel.Dock = DockStyle.Top;
             headerPanel.Height = 30;
-            headerPanel.BackColor = Color.CornflowerBlue;
+            headerPanel.BackColor = Color.Orange;
             this.Controls.Add(headerPanel);
 
             Label title = new Label();
             title.Text = "Release Manager";
-            title.ForeColor = Color.White;
+            title.ForeColor = Color.Black;
             title.Font = new Font("Tahoma", 12, FontStyle.Bold);
             title.AutoSize = true;
             title.Location = new Point(15, 05);
             headerPanel.Controls.Add(title);
 
             label5.Text = $"Welcome - {User.StatUserName}";
-            label5.BackColor = Color.CornflowerBlue;
-            label5.ForeColor = Color.White;
+            label5.BackColor = Color.Orange;
+            label5.ForeColor = Color.Black;
             label5.Font = new Font("Tahoma", 8, FontStyle.Bold);
             title.Location = new Point(20, 04);
 
             Button btnMin = new Button();
             btnMin.Text = "—";
-            btnMin.ForeColor = Color.Black;
-            btnMin.BackColor = Color.Aquamarine;
+            btnMin.ForeColor = Color.Red;
+            btnMin.BackColor = Color.AliceBlue;
             btnMin.FlatStyle = FlatStyle.Flat;
             btnMin.FlatAppearance.BorderSize = 0;
             btnMin.Size = new Size(30, 25);
@@ -83,7 +84,8 @@ namespace SendMails
             headerPanel.Controls.Add(btnClose);
 
             dtLocationTyte = myMail.ListEstateLocation().Tables[0];
-
+            gvEmails.DataSource = myMail.ListAllCCMails();
+           
             cmbLocationType.Font = new Font("Segoe UI", 9);
             cmbLocationType.DataSource = myMail.ListEstateLocation().Tables[0];
             cmbLocationType.DisplayMember = "LocationType";
@@ -93,6 +95,11 @@ namespace SendMails
             cmbPlantation.DataSource = myMail.ListPlantations(dtLocationTyte.Rows[0]["LocationType"].ToString()).Tables[0];
             cmbPlantation.DisplayMember = "Name";
             cmbPlantation.ValueMember = "Code";
+
+            gvEmails.Columns["Name"].ReadOnly = true;
+            gvEmails.Columns["Email"].ReadOnly = true;
+            gvEmails.Columns["Type"].ReadOnly = true;
+            gvEmails.Columns["Sending CC"].ReadOnly = false;
 
             //cmbModule.Font = new Font("Segoe UI", 9);
             //cmbModule.DataSource = myMail.ListModule(cmbPlantation.SelectedValue.ToString()).Tables[0];
@@ -120,21 +127,46 @@ namespace SendMails
                 String PlantationCode = cmbPlantation.SelectedValue.ToString();
                 String LatestBuild = txtBuild.Text.Trim();
 
+                List<string> selectedEmails = new List<string>();
+
+                foreach (DataGridViewRow row in gvEmails.Rows)
+                {
+                    
+                    if (!row.IsNewRow)
+                    {
+                        bool isChecked = Convert.ToBoolean(row.Cells["Sending CC"].Value); 
+                        if (isChecked)
+                        {
+                            string email = row.Cells["Email"].Value?.ToString();
+                            if (!string.IsNullOrEmpty(email))
+                            {
+                                selectedEmails.Add(email);
+                            }
+                        }
+                    }
+                }
+                
+                string result = string.Join(",", selectedEmails);              
+                List<string> ccEmails = selectedEmails;
+
                 List<string> toEmails = myMail.GetEmailAddressesFromDatabaseTo("To", cmbPlantation.SelectedValue.ToString());   // Fetch To emails
-                List<string> ccEmails = myMail.GetEmailAddressesFromDatabaseCC("CC");   // Fetch CC emails
+                //List<string> ccEmails = myMail.GetEmailAddressesFromDatabaseCC("CC");   // Fetch CC emails
 
 
                 if (string.IsNullOrWhiteSpace(textBox2.Text))
                 {
                     MessageBox.Show("Email body can't be Empty.");
+                    button1.Enabled = true;
                 }
                 else if (toEmails.Count == 0)
                 {
                     MessageBox.Show("No recipients found for To.");
+                    button1.Enabled = true;
                 }
                 else if (ccEmails.Count == 0)
                 {
                     MessageBox.Show("No recipients found for CC.");
+                    button1.Enabled = true;
                 }
                 else
                 {
@@ -148,11 +180,14 @@ namespace SendMails
                             MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
                             button1.Enabled = true;
+                            gvEmails.DataSource = myMail.ListAllCCMails();
+                            textBox2.Clear();
                         }
                         else
                         {
                             MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             button1.Enabled = true;
+                            gvEmails.DataSource = myMail.ListAllCCMails();
                         }
                     }
                     if (ModuleName == "Checkroll")
@@ -165,11 +200,14 @@ namespace SendMails
                             MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             txtBuild.Text = myMail.getLastBuild(cmbModule.SelectedValue.ToString()).ToString();
                             button1.Enabled = true;
+                            gvEmails.DataSource = myMail.ListAllCCMails();
+                            textBox2.Clear();
                         }
                         else
                         {
                             MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             button1.Enabled = true;
+                            gvEmails.DataSource = myMail.ListAllCCMails();
                         }
                     }
                     else
@@ -182,11 +220,14 @@ namespace SendMails
                             MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
                             button1.Enabled = true;
+                            gvEmails.DataSource = myMail.ListAllCCMails();
+                            textBox2.Clear();
                         }
                         else
                         {
                             MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             button1.Enabled = true;
+                            gvEmails.DataSource = myMail.ListAllCCMails();
                         }
                     }
 
@@ -199,6 +240,7 @@ namespace SendMails
             {
                 MessageBox.Show("Error Occured..! Contact Yasas.");
                 button1.Enabled = true;
+                gvEmails.DataSource = myMail.ListAllCCMails();
             }
         }
 

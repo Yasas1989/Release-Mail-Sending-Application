@@ -46,14 +46,17 @@ namespace SendMails
             this.lblBuild = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.cmbLocationType = new System.Windows.Forms.ComboBox();
+            this.gvEmails = new System.Windows.Forms.DataGridView();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvEmails)).BeginInit();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.button1.BackColor = System.Drawing.Color.Orange;
             this.button1.Font = new System.Drawing.Font("Tahoma", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(543, 339);
+            this.button1.Location = new System.Drawing.Point(543, 565);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(102, 28);
             this.button1.TabIndex = 1;
@@ -142,7 +145,7 @@ namespace SendMails
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(657, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(657, 30);
             this.menuStrip1.TabIndex = 15;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -195,11 +198,32 @@ namespace SendMails
             this.cmbLocationType.TabIndex = 20;
             this.cmbLocationType.SelectedIndexChanged += new System.EventHandler(this.cmbLocationType_SelectedIndexChanged);
             // 
+            // gvEmails
+            // 
+            this.gvEmails.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.gvEmails.Location = new System.Drawing.Point(112, 349);
+            this.gvEmails.Name = "gvEmails";
+            this.gvEmails.RowHeadersWidth = 51;
+            this.gvEmails.RowTemplate.Height = 24;
+            this.gvEmails.Size = new System.Drawing.Size(533, 210);
+            this.gvEmails.TabIndex = 21;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(21, 349);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(71, 17);
+            this.label7.TabIndex = 22;
+            this.label7.Text = "CC Mails -";
+            // 
             // MailSending
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(657, 468);
+            this.ClientSize = new System.Drawing.Size(657, 602);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.gvEmails);
             this.Controls.Add(this.cmbLocationType);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.lblBuild);
@@ -221,6 +245,7 @@ namespace SendMails
             this.Text = "Sending Release Mails";
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvEmails)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -243,6 +268,8 @@ namespace SendMails
         private System.Windows.Forms.TextBox txtBuild;
         private System.Windows.Forms.ComboBox cmbLocationType;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.DataGridView gvEmails;
+        private System.Windows.Forms.Label label7;
     }
 }
 

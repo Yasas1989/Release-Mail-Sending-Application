@@ -112,9 +112,7 @@ namespace BusinessLayer
         {
 
             try
-            {
-                //string fromEmail = "yasas@ftservices.net";
-                //string fromPassword = "xyor bpvv kxxw frep";               
+            {                              
                 string fromEmail = $"{User.StatEmail}";               
                 string fromPassword = $"{User.StatAppPassword}";
                 string smtpServer = "smtp.gmail.com";
@@ -156,9 +154,9 @@ namespace BusinessLayer
                         "</ul>" +
                         "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
                         "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
-                        "<span style='padding-left:0px;'>OLAX Team",
+                        "<span style='padding-left:0px;'>OLAX Team <br> <br>"+
 
-
+                        "<span style='font-family:Tahoma; font-size:10px; 'padding-left:0px;'>This is a system-generated release notification. If you encounter any issues with this release, feel free to reply to this email.",
                         IsBodyHtml = true // Use true if sending HTML
 
                     };
@@ -224,9 +222,9 @@ namespace BusinessLayer
                         "</ul>" +
                         "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
                         "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
-                        "<span style='padding-left:0px;'>OLAX Team",
+                        "<span style='padding-left:0px;'>OLAX Team <br> <br>"+
 
-
+                        "<span style='font-family:Tahoma; font-size:10px; 'padding-left:0px;'>This is a system-generated release notification. If you encounter any issues with this release, feel free to reply to this email.",
                         IsBodyHtml = true // Use true if sending HTML
 
                     };
@@ -278,7 +276,7 @@ namespace BusinessLayer
                     {
 
                         From = new MailAddress(fromEmail),
-                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release V{LastVersion}",
+                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release V {LastVersion}",
 
                         Body =
 
@@ -291,9 +289,9 @@ namespace BusinessLayer
                         "</ul>" +
                         "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
                         "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
-                        "<span style='padding-left:0px;'>OLAX Team",
+                        "<span style='padding-left:0px;'>OLAX Team <br> <br>" +
 
-
+                        "<span style='font-family:Tahoma; font-size:10px; 'padding-left:0px;'>This is a system-generated release notification. If you encounter any issues with this release, feel free to reply to this email.",
                         IsBodyHtml = true // Use true if sending HTML
 
                     };
@@ -330,7 +328,45 @@ namespace BusinessLayer
 
             return emails;
         }
+        public DataTable ListAllCCMails()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("Name"));
+            dt.Columns.Add(new DataColumn("Email"));
+            dt.Columns.Add(new DataColumn("Type"));
+            dt.Columns.Add(new DataColumn("Sending CC", typeof(bool)));
+            
+            DataRow dtrow;
+            SqlDataReader dataReader;
+            dtrow = dt.NewRow();
+            dataReader = SQLHelper.ExecuteReader("SELECT  Name, Email, Type, Active  FROM     dbo.EmailDetails WHERE  (Type = 'CC')", CommandType.Text);
 
+            while (dataReader.Read())
+            {
+                dtrow = dt.NewRow();
+
+                if (!dataReader.IsDBNull(0))
+                {
+                    dtrow[0] = dataReader.GetString(0).Trim();
+                }
+                if (!dataReader.IsDBNull(1))
+                {
+                    dtrow[1] = dataReader.GetString(1).Trim();
+                }
+                if (!dataReader.IsDBNull(2))
+                {
+                    dtrow[2] = dataReader.GetString(2).Trim();
+                }
+                if (!dataReader.IsDBNull(3))
+                {
+                    dtrow[3] = dataReader.GetBoolean(3);
+                }               
+                dt.Rows.Add(dtrow);
+            }
+            dataReader.Close();
+            return dt;
+
+        }
         public List<string> GetEmailAddressesFromDatabaseTo(string emailType, String Code)
         {
 
