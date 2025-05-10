@@ -18,16 +18,18 @@ namespace SendMails
     {
         BusinessLayer.GetMails myMail = new BusinessLayer.GetMails();
         BusinessLayer.User myUser = new BusinessLayer.User();
-        
+
         public MailSending()
         {
             InitializeComponent();
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.None;
 
-        } 
+        }
 
-        DataTable dtEmployeeDetails = new DataTable();
+        //DataTable dtEmployeeDetails = new DataTable();
+
+        DataTable dtLocationTyte = new DataTable();
         private void Form1_Load(object sender, EventArgs e)
         {
             txtBuild.Enabled = false;
@@ -80,36 +82,43 @@ namespace SendMails
             btnClose.Click += (s, ev) => Application.Exit();
             headerPanel.Controls.Add(btnClose);
 
-            cmbPlantation.Font = new Font("Segoe UI", 9);           
-            cmbPlantation.DataSource = myMail.ListPlantations().Tables[0];
+            dtLocationTyte = myMail.ListEstateLocation().Tables[0];
+
+            cmbLocationType.Font = new Font("Segoe UI", 9);
+            cmbLocationType.DataSource = myMail.ListEstateLocation().Tables[0];
+            cmbLocationType.DisplayMember = "LocationType";
+            cmbLocationType.ValueMember = "LocationType";
+
+            cmbPlantation.Font = new Font("Segoe UI", 9);
+            cmbPlantation.DataSource = myMail.ListPlantations(dtLocationTyte.Rows[0]["LocationType"].ToString()).Tables[0];
             cmbPlantation.DisplayMember = "Name";
             cmbPlantation.ValueMember = "Code";
 
-            cmbModule.Font = new Font("Segoe UI", 9);
-            cmbModule.DataSource = myMail.ListModule(cmbPlantation.SelectedValue.ToString()).Tables[0];
-            cmbModule.DisplayMember = "ModuleName";
-            cmbModule.ValueMember = "ModuleShortCode";
-         
+            //cmbModule.Font = new Font("Segoe UI", 9);
+            //cmbModule.DataSource = myMail.ListModule(cmbPlantation.SelectedValue.ToString()).Tables[0];
+            //cmbModule.DisplayMember = "ModuleName";
+            //cmbModule.ValueMember = "ModuleShortCode";
+
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }
-       
+
         private async void button1_Click(object sender, EventArgs e)
         {
             button1.Enabled = false;
             try
             {
-                                
-                 String ModuleName = cmbModule.Text.Trim();
-                 Decimal LastVersion = decimal.Parse(txtVersion.Text);
-                 string PlantationName = cmbPlantation.Text.Trim();
-                 String ModuleShortCode = cmbModule.SelectedValue.ToString();
-                 String BodySubject = textBox2.Text;
-                 String PlantationCode = cmbPlantation.SelectedValue.ToString();
-                 String LatestBuild = txtBuild.Text.Trim();
+
+                String ModuleName = cmbModule.Text.Trim();
+                Decimal LastVersion = decimal.Parse(txtVersion.Text);
+                string PlantationName = cmbPlantation.Text.Trim();
+                String ModuleShortCode = cmbModule.SelectedValue.ToString();
+                String BodySubject = textBox2.Text;
+                String PlantationCode = cmbPlantation.SelectedValue.ToString();
+                String LatestBuild = txtBuild.Text.Trim();
 
                 List<string> toEmails = myMail.GetEmailAddressesFromDatabaseTo("To", cmbPlantation.SelectedValue.ToString());   // Fetch To emails
                 List<string> ccEmails = myMail.GetEmailAddressesFromDatabaseCC("CC");   // Fetch CC emails
@@ -126,10 +135,10 @@ namespace SendMails
                 else if (ccEmails.Count == 0)
                 {
                     MessageBox.Show("No recipients found for CC.");
-                }               
+                }
                 else
                 {
-                    if(ModuleName == "Payroll")
+                    if (ModuleName == "Payroll")
                     {
                         //SendEmail(toEmails, ccEmails);
                         bool success = myMail.SendEmailPayroll(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
@@ -180,9 +189,9 @@ namespace SendMails
                             button1.Enabled = true;
                         }
                     }
-                    
-                    
-                    
+
+
+
                 }
 
             }
@@ -191,11 +200,11 @@ namespace SendMails
                 MessageBox.Show("Error Occured..! Contact Yasas.");
                 button1.Enabled = true;
             }
-        }     
+        }
 
         private void cmbSubject_SelectedIndexChanged(object sender, EventArgs e)
         {
-          
+
             if (cmbModule.Text == "Checkroll")
             {
                 txtBuild.Text = myMail.getLastBuild(cmbModule.SelectedValue.ToString()).ToString();
@@ -212,7 +221,7 @@ namespace SendMails
             }
             else
             {
-                
+
                 txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
 
                 txtBuild.Enabled = false;
@@ -231,9 +240,19 @@ namespace SendMails
 
         private void cmbPlantation_SelectedIndexChanged(object sender, EventArgs e)
         {
-            cmbModule.DataSource = myMail.ListModule(cmbPlantation.SelectedValue.ToString()).Tables[0];
-            cmbModule.DisplayMember = "ModuleName";
-            cmbModule.ValueMember = "ModuleShortCode";
+            if (cmbLocationType.Text == "Estate")
+            {
+                cmbModule.DataSource = myMail.ListEstateModule(cmbPlantation.SelectedValue.ToString()).Tables[0];
+                cmbModule.DisplayMember = "ModuleName";
+                cmbModule.ValueMember = "ModuleShortCode";
+            }
+            if (cmbLocationType.Text == "Head Office")
+            {
+                cmbModule.DataSource = myMail.ListHOModule(cmbPlantation.SelectedValue.ToString()).Tables[0];
+                cmbModule.DisplayMember = "ModuleName";
+                cmbModule.ValueMember = "ModuleShortCode";
+            }
+
         }
 
         private void txtVersion_TextChanged(object sender, EventArgs e)
@@ -255,8 +274,18 @@ namespace SendMails
         {
 
         }
+
+        private void cmbLocationType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            cmbPlantation.Font = new Font("Segoe UI", 9);
+            cmbPlantation.DataSource = myMail.ListPlantations(cmbLocationType.Text.Trim()).Tables[0];
+            cmbPlantation.DisplayMember = "Name";
+            cmbPlantation.ValueMember = "Code";
+
+        }
     }
 
 
-    }
+}
 

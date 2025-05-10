@@ -15,14 +15,23 @@ namespace BusinessLayer
     {
         BusinessLayer.User myUser = new BusinessLayer.User();       
      
-        public DataSet ListPlantations()
+        public DataSet ListPlantations(String LocationType)
         {
-
             DataSet ds = new DataSet();
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand command = new SqlCommand();
-            da.SelectCommand = SQLHelper.CreateCommand("SELECT TOP (100) PERCENT Code, Name FROM dbo.PlantationDetails ORDER BY Code", CommandType.Text);
+            da.SelectCommand = SQLHelper.CreateCommand("SELECT TOP (100) PERCENT Code, Name, LocationType FROM dbo.PlantationDetails WHERE LocationType = '" + LocationType + "'", CommandType.Text);
             da.Fill(ds, "PlantationList");
+            return ds;
+        }
+
+        public DataSet ListEstateLocation()
+        {
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand command = new SqlCommand();
+            da.SelectCommand = SQLHelper.CreateCommand("SELECT TOP (100) PERCENT LocationType FROM     dbo.PlantationDetails GROUP BY LocationType", CommandType.Text);
+            da.Fill(ds, "LocationType");
             return ds;
         }
 
@@ -35,13 +44,23 @@ namespace BusinessLayer
             SQLHelper.ExecuteNonQuery("Update dbo.ModuleDetails set BuildNumber = '" + LatestBuild + "' where ModuleShortCode =  '" + ModuleShortCode + "'", CommandType.Text);
         }
 
-        public DataSet ListModule(String Code)
+        public DataSet ListHOModule(String Code)
         {
 
             DataSet ds = new DataSet();
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand command = new SqlCommand();
-            da.SelectCommand = SQLHelper.CreateCommand("SELECT Code, ModuleName, ModuleShortCode FROM     dbo.ModuleDetails WHERE  (Code = '" + Code + "') OR (Code = 'COM')", CommandType.Text);
+            da.SelectCommand = SQLHelper.CreateCommand("SELECT Code, ModuleName, ModuleShortCode FROM     dbo.ModuleDetails WHERE  (Code = '" + Code + "') OR (Code = 'COMHO')", CommandType.Text);
+            da.Fill(ds, "PlantationList");
+            return ds;
+        }
+        public DataSet ListEstateModule(String Code)
+        {
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand command = new SqlCommand();
+            da.SelectCommand = SQLHelper.CreateCommand("SELECT Code, ModuleName, ModuleShortCode FROM     dbo.ModuleDetails WHERE  (Code = '" + Code + "') OR (Code = 'COMES')", CommandType.Text);
             da.Fill(ds, "PlantationList");
             return ds;
         }
