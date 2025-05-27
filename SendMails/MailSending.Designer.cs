@@ -56,11 +56,7 @@ namespace SendMails
             // 
             this.button1.BackColor = System.Drawing.Color.Orange;
             this.button1.Font = new System.Drawing.Font("Tahoma", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-<<<<<<< HEAD
             this.button1.Location = new System.Drawing.Point(548, 565);
-=======
-            this.button1.Location = new System.Drawing.Point(543, 565);
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(102, 28);
             this.button1.TabIndex = 1;
@@ -149,11 +145,7 @@ namespace SendMails
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-<<<<<<< HEAD
             this.menuStrip1.Size = new System.Drawing.Size(658, 24);
-=======
-            this.menuStrip1.Size = new System.Drawing.Size(657, 30);
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
             this.menuStrip1.TabIndex = 15;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -229,11 +221,7 @@ namespace SendMails
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-<<<<<<< HEAD
             this.ClientSize = new System.Drawing.Size(658, 602);
-=======
-            this.ClientSize = new System.Drawing.Size(657, 602);
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
             this.Controls.Add(this.label7);
             this.Controls.Add(this.gvEmails);
             this.Controls.Add(this.cmbLocationType);

@@ -25,11 +25,7 @@ namespace SendMails
             this.StartPosition = FormStartPosition.CenterScreen;
             this.FormBorderStyle = FormBorderStyle.None;
             gvEmails.RowHeadersVisible = false;
-<<<<<<< HEAD
 
-=======
-           
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
         }
 
         //DataTable dtEmployeeDetails = new DataTable();
@@ -44,11 +40,7 @@ namespace SendMails
 
             Panel headerPanel = new Panel();
             headerPanel.Dock = DockStyle.Top;
-<<<<<<< HEAD
             headerPanel.Height = 35;
-=======
-            headerPanel.Height = 30;
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
             headerPanel.BackColor = Color.Orange;
             this.Controls.Add(headerPanel);
 
@@ -111,11 +103,7 @@ namespace SendMails
 
             dtLocationTyte = myMail.ListEstateLocation().Tables[0];
             gvEmails.DataSource = myMail.ListAllCCMails();
-<<<<<<< HEAD
 
-=======
-           
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
             cmbLocationType.Font = new Font("Segoe UI", 9);
             cmbLocationType.DataSource = myMail.ListEstateLocation().Tables[0];
             cmbLocationType.DisplayMember = "LocationType";
@@ -160,18 +148,13 @@ namespace SendMails
                 List<string> selectedEmails = new List<string>();
 
                 foreach (DataGridViewRow row in gvEmails.Rows)
-                {
-<<<<<<< HEAD
+
+
 
                     if (!row.IsNewRow)
                     {
                         bool isChecked = Convert.ToBoolean(row.Cells["Sending CC"].Value);
-=======
-                    
-                    if (!row.IsNewRow)
-                    {
-                        bool isChecked = Convert.ToBoolean(row.Cells["Sending CC"].Value); 
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
+
                         if (isChecked)
                         {
                             string email = row.Cells["Email"].Value?.ToString();
@@ -181,14 +164,9 @@ namespace SendMails
                             }
                         }
                     }
-                }
-<<<<<<< HEAD
+
 
                 string result = string.Join(",", selectedEmails);
-=======
-                
-                string result = string.Join(",", selectedEmails);              
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
                 List<string> ccEmails = selectedEmails;
 
                 List<string> toEmails = myMail.GetEmailAddressesFromDatabaseTo("To", cmbPlantation.SelectedValue.ToString());   // Fetch To emails
@@ -212,51 +190,7 @@ namespace SendMails
                 }
                 else
                 {
-<<<<<<< HEAD
                     if (cmbPlantation.Text.Trim() == "Bogawanthalawa Estate")
-=======
-                    if (ModuleName == "Payroll")
-                    {
-                        //SendEmail(toEmails, ccEmails);
-                        bool success = myMail.SendEmailPayroll(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
-                        if (success)
-                        {
-                            myMail.UpdateLatestVersion(LastVersion, ModuleShortCode);
-                            MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
-                            button1.Enabled = true;
-                            gvEmails.DataSource = myMail.ListAllCCMails();
-                            textBox2.Clear();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            button1.Enabled = true;
-                            gvEmails.DataSource = myMail.ListAllCCMails();
-                        }
-                    }
-                    if (ModuleName == "Checkroll")
-                    {
-                        //SendEmail(toEmails, ccEmails);
-                        bool success = myMail.SendEmailCheckroll(toEmails, ccEmails, ModuleName, LatestBuild, PlantationName, BodySubject);
-                        if (success)
-                        {
-                            myMail.UpdateLatestBuild(LatestBuild, ModuleShortCode);
-                            MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            txtBuild.Text = myMail.getLastBuild(cmbModule.SelectedValue.ToString()).ToString();
-                            button1.Enabled = true;
-                            gvEmails.DataSource = myMail.ListAllCCMails();
-                            textBox2.Clear();
-                        }
-                        else
-                        {
-                            MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            button1.Enabled = true;
-                            gvEmails.DataSource = myMail.ListAllCCMails();
-                        }
-                    }
-                    else
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
                     {
                         //SendEmail(toEmails, ccEmails);
                         bool success = myMail.SendEmail(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
@@ -274,7 +208,6 @@ namespace SendMails
                             MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             button1.Enabled = true;
                             gvEmails.DataSource = myMail.ListAllCCMails();
-<<<<<<< HEAD
                         }
                     }
                     else
@@ -318,8 +251,6 @@ namespace SendMails
                                 button1.Enabled = true;
                                 gvEmails.DataSource = myMail.ListAllCCMails();
                             }
-=======
->>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
                         }
                     }
                 }
