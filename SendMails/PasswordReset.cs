@@ -52,6 +52,7 @@ namespace SendMails
             {
                 myUser.SendPasswordResetCode(UserName);
                 txtResetCode.Enabled = true;
+                txtResetCode.Visible = true;
                 label5.Visible = true;
                 btnSubmitCode.Enabled = true;
                 btnSubmitCode.Visible = true;
@@ -93,11 +94,15 @@ namespace SendMails
                 txtConfirmPass.Enabled = true;
                 txtConfirmPass.Visible = true;
                 btnReset.Enabled = true;
+                button2.Enabled = false;
+                button2.Visible = false;
                 btnReset.Visible = true;
                 btnSubmitCode.Enabled = false;
                 btnSubmitCode.Visible = false;
                 label5.Visible = false;
                 lblCpass.Visible = true;
+                txtResetCode.Enabled = false;
+                txtResetCode.Visible = false;
                 lblPass.Visible = true;
 
             }
@@ -107,13 +112,14 @@ namespace SendMails
         private void PasswordReset_Load(object sender, EventArgs e)
         {
             txtResetCode.Enabled = false;
+            txtResetCode.Visible = false;
             label5.Visible = false;
             btnSubmitCode.Enabled = false;
             btnSubmitCode.Visible = false;
             lblPass.Visible = false;
             lblCpass.Visible = false;
             txtNewPass.Enabled = false;
-            txtNewPass.Visible = false;
+            txtNewPass.Visible = false;          
             txtConfirmPass.Enabled = false;
             txtConfirmPass.Visible = false;
             btnReset.Enabled = false;

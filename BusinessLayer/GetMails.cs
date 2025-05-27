@@ -54,6 +54,17 @@ namespace BusinessLayer
             da.Fill(ds, "PlantationList");
             return ds;
         }
+        public DataSet ListWareHouseModule(String Code)
+        {
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand command = new SqlCommand();
+            da.SelectCommand = SQLHelper.CreateCommand("SELECT Code, ModuleName, ModuleShortCode FROM     dbo.ModuleDetails WHERE  (Code = '" + Code + "')", CommandType.Text);
+            da.Fill(ds, "PlantationList");
+            return ds;
+        }
+
         public DataSet ListEstateModule(String Code)
         {
 
@@ -61,6 +72,16 @@ namespace BusinessLayer
             SqlDataAdapter da = new SqlDataAdapter();
             SqlCommand command = new SqlCommand();
             da.SelectCommand = SQLHelper.CreateCommand("SELECT Code, ModuleName, ModuleShortCode FROM     dbo.ModuleDetails WHERE  (Code = '" + Code + "') OR (Code = 'COMES')", CommandType.Text);
+            da.Fill(ds, "PlantationList");
+            return ds;
+        }
+        public DataSet ListEstateModuleBPL(String Code)
+        {
+
+            DataSet ds = new DataSet();
+            SqlDataAdapter da = new SqlDataAdapter();
+            SqlCommand command = new SqlCommand();
+            da.SelectCommand = SQLHelper.CreateCommand("SELECT Code, ModuleName, ModuleShortCode FROM     dbo.ModuleDetails WHERE  (Code = '" + Code + "')", CommandType.Text);
             da.Fill(ds, "PlantationList");
             return ds;
         }
@@ -107,75 +128,7 @@ namespace BusinessLayer
             }
             return Build;
         }
-
-        public bool SendEmailPayroll(List<string> toEmails, List<string> ccEmails, String ModuleName, Decimal LastVersion, String PlantationName, String BodySubject)
-        {
-
-            try
-            {
-                //string fromEmail = "yasas@ftservices.net";
-                //string fromPassword = "xyor bpvv kxxw frep";               
-                string fromEmail = $"{User.StatEmail}";               
-                string fromPassword = $"{User.StatAppPassword}";
-                string smtpServer = "smtp.gmail.com";
-                int smtpPort = 587;
-
-                using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
-                {
-                    smtpClient.Credentials = new NetworkCredential(fromEmail, fromPassword);
-                    smtpClient.EnableSsl = true;
-                    smtpClient.ServicePoint.MaxIdleTime = 2 * 60 * 1000; // Keep SMTP connection alive
-                    smtpClient.ServicePoint.ConnectionLimit = 10; // Allow multiple connections
-
-                    // Split based on period + space + capital letter
-                    string[] sentences = System.Text.RegularExpressions.Regex.Split(BodySubject, @"(?<=[.?!])\s+(?=[A-Z])");
-                    // Add bullets
-                    StringBuilder formatted = new StringBuilder();
-                    formatted.Append("<ul>"); // Start list
-
-                    foreach (string sentence in sentences)
-                    {
-                        formatted.Append("<li>" + sentence.Trim() + "</li>");
-                    }
-                    formatted.Append("</ul>"); // End list                 
-
-                    MailMessage mail = new MailMessage
-                    {
-
-                        From = new MailAddress(fromEmail),
-                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release",
-
-                        Body =
-
-                        "<span style='font-family:Tahoma; font-size:17px; padding-left:0px;'>Dear All,<br>" +
-                        "<span style='padding-left:0px;'>There is a new update from OLAX Systems.</span><br><br>" +
-                        "<span style='padding-left:0px;'>Release Contains:</span><br><br>" +
-                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release </b> We have done some fine-tunings for:</span><br><br>" +
-                        "<ul style='margin-top:0px; margin-bottom:0px; '>" +
-                        $"{formatted}<br><br>" +
-                        "</ul>" +
-                        "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
-                        "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
-                        "<span style='padding-left:0px;'>OLAX Team",
-
-
-                        IsBodyHtml = true // Use true if sending HTML
-
-                    };
-
-                    foreach (var email in toEmails) mail.To.Add(email);
-                    foreach (var email in ccEmails) mail.CC.Add(email);
-
-                    smtpClient.Send(mail); // Blocking call, but handled inside ThreadPool
-                }
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("❌ Email Error: " + ex.Message);
-                return false;
-            }
-        }
+        
         public bool SendEmailCheckroll(List<string> toEmails, List<string> ccEmails, String ModuleName, String LatestBuild, String PlantationName, String BodySubject)
         {
 
@@ -218,15 +171,15 @@ namespace BusinessLayer
                         "<span style='font-family:Tahoma; font-size:17px; padding-left:0px;'>Dear All,<br>" +
                         "<span style='padding-left:0px;'>There is a new update from OLAX Systems.</span><br><br>" +
                         "<span style='padding-left:0px;'>Release Contains:</span><br><br>" +
-                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release (Build {LatestBuild}) </b> We have done some fine-tunings for:</span><br><br>" +
+                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release (Build {LatestBuild}) </b> We have done:</span><br><br>" +
                         "<ul style='margin-top:0px; margin-bottom:0px; '>" +
                         $"{formatted}<br><br>" +
                         "</ul>" +
                         "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
                         "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
-                        "<span style='padding-left:0px;'>OLAX Team",
+                        "<span style='padding-left:0px;'>OLAX Team <br> <br>"+
 
-
+                        "<span style='font-family:Tahoma; font-size:10px; 'padding-left:0px;'>This is a system-generated release notification. If you encounter any issues with this release, feel free to reply to this email.",
                         IsBodyHtml = true // Use true if sending HTML
 
                     };
@@ -278,22 +231,22 @@ namespace BusinessLayer
                     {
 
                         From = new MailAddress(fromEmail),
-                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release V{LastVersion}",
+                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release V {LastVersion}",
 
                         Body =
 
                         "<span style='font-family:Tahoma; font-size:17px; padding-left:0px;'>Dear All,<br>" +
                         "<span style='padding-left:0px;'>There is a new update from OLAX Systems.</span><br><br>" +
                         "<span style='padding-left:0px;'>Release Contains:</span><br><br>" +
-                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release V {LastVersion}</b> We have done some fine-tunings for:</span><br><br>" +
+                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release V {LastVersion}</b> We have done:</span><br><br>" +
                         "<ul style='margin-top:0px; margin-bottom:0px; '>" +
                         $"{formatted}<br><br>" +
                         "</ul>" +
                         "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
                         "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
-                        "<span style='padding-left:0px;'>OLAX Team",
+                        "<span style='padding-left:0px;'>OLAX Team <br> <br>" +
 
-
+                        "<span style='font-family:Tahoma; font-size:10px; 'padding-left:0px;'>This is a system-generated release notification. If you encounter any issues with this release, feel free to reply to this email.",
                         IsBodyHtml = true // Use true if sending HTML
 
                     };
@@ -330,7 +283,45 @@ namespace BusinessLayer
 
             return emails;
         }
+        public DataTable ListAllCCMails()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add(new DataColumn("Name"));
+            dt.Columns.Add(new DataColumn("Email"));
+            dt.Columns.Add(new DataColumn("Type"));
+            dt.Columns.Add(new DataColumn("Sending CC", typeof(bool)));
+            
+            DataRow dtrow;
+            SqlDataReader dataReader;
+            dtrow = dt.NewRow();
+            dataReader = SQLHelper.ExecuteReader("SELECT  Name, Email, Type, Active  FROM     dbo.EmailDetails WHERE  (Type = 'CC')", CommandType.Text);
 
+            while (dataReader.Read())
+            {
+                dtrow = dt.NewRow();
+
+                if (!dataReader.IsDBNull(0))
+                {
+                    dtrow[0] = dataReader.GetString(0).Trim();
+                }
+                if (!dataReader.IsDBNull(1))
+                {
+                    dtrow[1] = dataReader.GetString(1).Trim();
+                }
+                if (!dataReader.IsDBNull(2))
+                {
+                    dtrow[2] = dataReader.GetString(2).Trim();
+                }
+                if (!dataReader.IsDBNull(3))
+                {
+                    dtrow[3] = dataReader.GetBoolean(3);
+                }               
+                dt.Rows.Add(dtrow);
+            }
+            dataReader.Close();
+            return dt;
+
+        }
         public List<string> GetEmailAddressesFromDatabaseTo(string emailType, String Code)
         {
 

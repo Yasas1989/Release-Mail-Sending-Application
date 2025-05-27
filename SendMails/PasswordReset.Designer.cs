@@ -124,7 +124,7 @@ namespace SendMails
             // 
             this.lblPass.AutoSize = true;
             this.lblPass.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblPass.Location = new System.Drawing.Point(36, 106);
+            this.lblPass.Location = new System.Drawing.Point(33, 104);
             this.lblPass.Name = "lblPass";
             this.lblPass.Size = new System.Drawing.Size(130, 21);
             this.lblPass.TabIndex = 23;
@@ -200,7 +200,7 @@ namespace SendMails
             // 
             this.lblCpass.AutoSize = true;
             this.lblCpass.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCpass.Location = new System.Drawing.Point(12, 136);
+            this.lblCpass.Location = new System.Drawing.Point(9, 137);
             this.lblCpass.Name = "lblCpass";
             this.lblCpass.Size = new System.Drawing.Size(154, 21);
             this.lblCpass.TabIndex = 32;
@@ -209,7 +209,7 @@ namespace SendMails
             // button2
             // 
             this.button2.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.button2.Location = new System.Drawing.Point(234, 107);
+            this.button2.Location = new System.Drawing.Point(234, 105);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(138, 29);
             this.button2.TabIndex = 33;
@@ -221,7 +221,7 @@ namespace SendMails
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Tahoma", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(63, 105);
+            this.label5.Location = new System.Drawing.Point(60, 104);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(103, 21);
             this.label5.TabIndex = 34;
@@ -230,7 +230,7 @@ namespace SendMails
             // txtNewPass
             // 
             this.txtNewPass.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNewPass.Location = new System.Drawing.Point(178, 106);
+            this.txtNewPass.Location = new System.Drawing.Point(178, 103);
             this.txtNewPass.Name = "txtNewPass";
             this.txtNewPass.Size = new System.Drawing.Size(194, 22);
             this.txtNewPass.TabIndex = 35;
@@ -239,7 +239,7 @@ namespace SendMails
             // 
             // btnReset
             // 
-            this.btnReset.Location = new System.Drawing.Point(296, 164);
+            this.btnReset.Location = new System.Drawing.Point(297, 165);
             this.btnReset.Name = "btnReset";
             this.btnReset.Size = new System.Drawing.Size(75, 28);
             this.btnReset.TabIndex = 36;
