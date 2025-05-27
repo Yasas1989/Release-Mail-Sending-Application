@@ -128,7 +128,77 @@ namespace BusinessLayer
             }
             return Build;
         }
+<<<<<<< HEAD
         
+=======
+
+        public bool SendEmailPayroll(List<string> toEmails, List<string> ccEmails, String ModuleName, Decimal LastVersion, String PlantationName, String BodySubject)
+        {
+
+            try
+            {                              
+                string fromEmail = $"{User.StatEmail}";               
+                string fromPassword = $"{User.StatAppPassword}";
+                string smtpServer = "smtp.gmail.com";
+                int smtpPort = 587;
+
+                using (SmtpClient smtpClient = new SmtpClient(smtpServer, smtpPort))
+                {
+                    smtpClient.Credentials = new NetworkCredential(fromEmail, fromPassword);
+                    smtpClient.EnableSsl = true;
+                    smtpClient.ServicePoint.MaxIdleTime = 2 * 60 * 1000; // Keep SMTP connection alive
+                    smtpClient.ServicePoint.ConnectionLimit = 10; // Allow multiple connections
+
+                    // Split based on period + space + capital letter
+                    string[] sentences = System.Text.RegularExpressions.Regex.Split(BodySubject, @"(?<=[.?!])\s+(?=[A-Z])");
+                    // Add bullets
+                    StringBuilder formatted = new StringBuilder();
+                    formatted.Append("<ul>"); // Start list
+
+                    foreach (string sentence in sentences)
+                    {
+                        formatted.Append("<li>" + sentence.Trim() + "</li>");
+                    }
+                    formatted.Append("</ul>"); // End list                 
+
+                    MailMessage mail = new MailMessage
+                    {
+
+                        From = new MailAddress(fromEmail),
+                        Subject = $"Olax System Update - {PlantationName} {ModuleName} Module Release",
+
+                        Body =
+
+                        "<span style='font-family:Tahoma; font-size:17px; padding-left:0px;'>Dear All,<br>" +
+                        "<span style='padding-left:0px;'>There is a new update from OLAX Systems.</span><br><br>" +
+                        "<span style='padding-left:0px;'>Release Contains:</span><br><br>" +
+                        $"<span style='padding-left:40px;'><b>1. {PlantationName} {ModuleName} Module Release </b> We have done some fine-tunings for:</span><br><br>" +
+                        "<ul style='margin-top:0px; margin-bottom:0px; '>" +
+                        $"{formatted}<br><br>" +
+                        "</ul>" +
+                        "<span style='padding-left:-0px;'>Kindly download the latest version.<br><br>" +
+                        "<span style='padding-left:0px;'>Thanks and Best Regards,<br>" +
+                        "<span style='padding-left:0px;'>OLAX Team <br> <br>"+
+
+                        "<span style='font-family:Tahoma; font-size:10px; 'padding-left:0px;'>This is a system-generated release notification. If you encounter any issues with this release, feel free to reply to this email.",
+                        IsBodyHtml = true // Use true if sending HTML
+
+                    };
+
+                    foreach (var email in toEmails) mail.To.Add(email);
+                    foreach (var email in ccEmails) mail.CC.Add(email);
+
+                    smtpClient.Send(mail); // Blocking call, but handled inside ThreadPool
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("❌ Email Error: " + ex.Message);
+                return false;
+            }
+        }
+>>>>>>> 8932502bee1cfb33a7703dbe0a84a29a8848cfcc
         public bool SendEmailCheckroll(List<string> toEmails, List<string> ccEmails, String ModuleName, String LatestBuild, String PlantationName, String BodySubject)
         {
 
