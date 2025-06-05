@@ -103,11 +103,16 @@ namespace SendMails
 
             dtLocationTyte = myMail.ListEstateLocation().Tables[0];
             gvEmails.DataSource = myMail.ListAllCCMails();
-
+            
             cmbLocationType.Font = new Font("Segoe UI", 9);
             cmbLocationType.DataSource = myMail.ListEstateLocation().Tables[0];
             cmbLocationType.DisplayMember = "LocationType";
             cmbLocationType.ValueMember = "LocationType";
+
+            JobDone.DataSource = myMail.ListAllCCMails();
+            JobDone.DisplayMember = "Name";
+            JobDone.ValueMember = "Name";
+            JobDone.SelectedIndex = -1;
 
             cmbPlantation.Font = new Font("Segoe UI", 9);
             cmbPlantation.DataSource = myMail.ListPlantations(dtLocationTyte.Rows[0]["LocationType"].ToString()).Tables[0];
@@ -279,6 +284,7 @@ namespace SendMails
                 String BodySubject = textBox2.Text;
                 String PlantationCode = cmbPlantation.SelectedValue.ToString();
                 String LatestBuild = txtBuild.Text.Trim();
+                String DevDoneBy = JobDone.Text.Trim();
 
                 List<string> selectedEmails = new List<string>();
 
@@ -323,6 +329,11 @@ namespace SendMails
                     MessageBox.Show("No recipients found for CC.");
                     button1.Enabled = true;
                 }
+                else if (string.IsNullOrWhiteSpace(JobDone.Text))
+                {
+                    MessageBox.Show("Please Select the Development Done By Section");
+                    button1.Enabled = true;
+                }
                 else
                 {
                     if (cmbPlantation.Text.Trim() == "Bogawanthalawa Estate")
@@ -337,9 +348,10 @@ namespace SendMails
                             button1.Enabled = true;
                             gvEmails.DataSource = myMail.ListAllCCMails();
                             textBox2.Clear();
+                            JobDone.SelectedIndex = -1;
                             try
                             {
-                                myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DateTime.Now);
+                                myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DevDoneBy, DateTime.Now);
                             }
                             catch { MessageBox.Show("Error on update Audit Log...!"); }
                         }
@@ -364,9 +376,10 @@ namespace SendMails
                                 button1.Enabled = true;
                                 gvEmails.DataSource = myMail.ListAllCCMails();
                                 textBox2.Clear();
+                                JobDone.SelectedIndex = -1;
                                 try
                                 {
-                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, 0, LatestBuild, User.StatUserName, DateTime.Now);
+                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, 0, LatestBuild, User.StatUserName, DevDoneBy, DateTime.Now);
                                 }
                                 catch { MessageBox.Show("Error on update Audit Log...!"); }
                             }
@@ -389,9 +402,10 @@ namespace SendMails
                                 button1.Enabled = true;
                                 gvEmails.DataSource = myMail.ListAllCCMails();
                                 textBox2.Clear();
+                                JobDone.SelectedIndex = -1;
                                 try
                                 {
-                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DateTime.Now);
+                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DevDoneBy, DateTime.Now);
                                 }
                                 catch { MessageBox.Show("Error on update Audit Log...!"); }
                             }
@@ -525,6 +539,11 @@ namespace SendMails
             cmbPlantation.DataSource = myMail.ListPlantations(cmbLocationType.Text.Trim()).Tables[0];
             cmbPlantation.DisplayMember = "Name";
             cmbPlantation.ValueMember = "Code";
+
+        }
+
+        private void label8_Click(object sender, EventArgs e)
+        {
 
         }
     }

@@ -265,9 +265,9 @@ namespace BusinessLayer
             }
         }
 
-        public void CreateLog(String ModuleName,String Description, Decimal Version, String Build,  String UserName, DateTime CreatedDateTime)
+        public void CreateLog(String ModuleName,String Description, Decimal Version, String Build,  String UserName, String DevDoneBy, DateTime CreatedDateTime)
         {
-            SQLHelper.ExecuteNonQuery("insert into AuditLog (ModuleName, Description, Version, Build, UserName, CreatedDateTime) values ('" + ModuleName + "','" + Description + "','" + Version + "','" + Build + "', '" + UserName + "', '" + CreatedDateTime + "')", CommandType.Text);
+            SQLHelper.ExecuteNonQuery("insert into AuditLog (ModuleName, Description, Version, Build, UserName, DevDoneBy, CreatedDateTime) values ('" + ModuleName + "','" + Description + "','" + Version + "','" + Build + "', '" + UserName + "','" + DevDoneBy + "', '" + CreatedDateTime + "')", CommandType.Text);
         }
 
         public List<string> GetEmailAddressesFromDatabaseCC(string emailType)
