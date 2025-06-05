@@ -52,6 +52,11 @@ namespace SendMails
             //int height = spinner.Height + lblStatus.Height + 30;
             //this.ClientSize = new Size(width, height);
         }
+
+        private void LoadingForm_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 
 

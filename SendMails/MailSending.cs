@@ -130,257 +130,289 @@ namespace SendMails
         {
 
         }
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            button1.Enabled = false;
-
-            // ✅ Step 1: Collect UI values before Task.Run (safe access)
-            string moduleName = cmbModule.Text.Trim();
-            decimal lastVersion = decimal.Parse(txtVersion.Text);
-            string plantationName = cmbPlantation.Text.Trim();
-            string moduleShortCode = cmbModule.SelectedValue.ToString();
-            string bodySubject = textBox2.Text;
-            string plantationCode = cmbPlantation.SelectedValue.ToString();
-            string latestBuild = txtBuild.Text.Trim();
-
-            List<string> selectedEmails = new List<string>();
-            foreach (DataGridViewRow row in gvEmails.Rows)
-            {
-                if (!row.IsNewRow)
-                {
-                    bool isChecked = Convert.ToBoolean(row.Cells["Sending CC"].Value);
-                    if (isChecked)
-                    {
-                        string email = row.Cells["Email"].Value?.ToString();
-                        if (!string.IsNullOrEmpty(email))
-                        {
-                            selectedEmails.Add(email);
-                        }
-                    }
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(bodySubject))
-            {
-                MessageBox.Show("Email body can't be Empty.");
-                button1.Enabled = true;
-                return;
-            }
-
-            if (selectedEmails.Count == 0)
-            {
-                MessageBox.Show("No recipients found for CC.");
-                button1.Enabled = true;
-                return;
-            }
-
-            List<string> toEmails = myMail.GetEmailAddressesFromDatabaseTo("To", plantationCode);
-            if (toEmails.Count == 0)
-            {
-                MessageBox.Show("No recipients found for To.");
-                button1.Enabled = true;
-                return;
-            }
-
-            // ✅ Step 2: Show loading form
-            var loadingForm = new LoadingForm();
-            loadingForm.Show(this);
-            loadingForm.BringToFront();
-            loadingForm.Refresh();
-
-            bool success = false;
-
-            try
-            {
-                await Task.Run(() =>
-                {
-                    if (plantationName == "Bogawanthalawa Estate")
-                    {
-                        success = myMail.SendEmail(toEmails, selectedEmails, moduleName, lastVersion, plantationName, bodySubject);
-                        if (success)
-                        {
-                            myMail.UpdateLatestVersion(lastVersion, moduleShortCode);
-                        }
-                    }
-                    else if (moduleName == "Checkroll" || moduleName == "BoughtLeaf" || moduleName == "Payroll" || moduleName == "Statutory")
-                    {
-                        success = myMail.SendEmailCheckroll(toEmails, selectedEmails, moduleName, latestBuild, plantationName, bodySubject);
-                        if (success)
-                        {
-                            myMail.UpdateLatestBuild(latestBuild, moduleShortCode);
-                        }
-                    }
-                    else
-                    {
-                        success = myMail.SendEmail(toEmails, selectedEmails, moduleName, lastVersion, plantationName, bodySubject);
-                        if (success)
-                        {
-                            myMail.UpdateLatestVersion(lastVersion, moduleShortCode);
-                        }
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error Occurred! Contact Yasas.\n" + ex.Message);
-            }
-            finally
-            {
-                // ✅ Step 3: Hide popup
-                loadingForm.Close();
-
-                // ✅ Step 4: Show message
-                if (success)
-                {
-                    MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-
-                // Refresh UI
-                button1.Enabled = true;
-                textBox2.Clear();
-                gvEmails.DataSource = myMail.ListAllCCMails();
-                txtVersion.Text = myMail.getLastVersion(moduleShortCode).ToString("N2");
-                txtBuild.Text = myMail.getLastBuild(moduleShortCode).ToString();
-            }
-        }
-
-
         //private async void button1_Click(object sender, EventArgs e)
         //{
         //    button1.Enabled = false;
-        //    try
+
+        //    //  Collect UI values before Task.Run (safe access)
+        //    string moduleName = cmbModule.Text.Trim();
+        //    decimal lastVersion = decimal.Parse(txtVersion.Text);
+        //    string plantationName = cmbPlantation.Text.Trim();
+        //    string moduleShortCode = cmbModule.SelectedValue.ToString();
+        //    string bodySubject = textBox2.Text;
+        //    string plantationCode = cmbPlantation.SelectedValue.ToString();
+        //    string latestBuild = txtBuild.Text.Trim();
+
+
+        //    List<string> selectedEmails = new List<string>();
+        //    foreach (DataGridViewRow row in gvEmails.Rows)
         //    {
-
-        //        String ModuleName = cmbModule.Text.Trim();
-        //        Decimal LastVersion = decimal.Parse(txtVersion.Text);
-        //        string PlantationName = cmbPlantation.Text.Trim();
-        //        String ModuleShortCode = cmbModule.SelectedValue.ToString();
-        //        String BodySubject = textBox2.Text;
-        //        String PlantationCode = cmbPlantation.SelectedValue.ToString();
-        //        String LatestBuild = txtBuild.Text.Trim();
-
-        //        List<string> selectedEmails = new List<string>();
-
-        //        foreach (DataGridViewRow row in gvEmails.Rows)
-
-
-
-        //            if (!row.IsNewRow)
+        //        if (!row.IsNewRow)
+        //        {
+        //            bool isChecked = Convert.ToBoolean(row.Cells["Sending CC"].Value);
+        //            if (isChecked)
         //            {
-        //                bool isChecked = Convert.ToBoolean(row.Cells["Sending CC"].Value);
-
-        //                if (isChecked)
+        //                string email = row.Cells["Email"].Value?.ToString();
+        //                if (!string.IsNullOrEmpty(email))
         //                {
-        //                    string email = row.Cells["Email"].Value?.ToString();
-        //                    if (!string.IsNullOrEmpty(email))
-        //                    {
-        //                        selectedEmails.Add(email);
-        //                    }
+        //                    selectedEmails.Add(email);
         //                }
         //            }
-
-
-        //        string result = string.Join(",", selectedEmails);
-        //        List<string> ccEmails = selectedEmails;
-
-        //        List<string> toEmails = myMail.GetEmailAddressesFromDatabaseTo("To", cmbPlantation.SelectedValue.ToString());   // Fetch To emails
-        //        //List<string> ccEmails = myMail.GetEmailAddressesFromDatabaseCC("CC");   // Fetch CC emails
-
-
-        //        if (string.IsNullOrWhiteSpace(textBox2.Text))
-        //        {
-        //            MessageBox.Show("Email body can't be Empty.");
-        //            button1.Enabled = true;
         //        }
-        //        else if (toEmails.Count == 0)
+        //    }
+
+        //    if (string.IsNullOrWhiteSpace(bodySubject))
+        //    {
+        //        MessageBox.Show("Email body can't be Empty.");
+        //        button1.Enabled = true;
+        //        return;
+        //    }
+
+        //    if (selectedEmails.Count == 0)
+        //    {
+        //        MessageBox.Show("No recipients found for CC.");
+        //        button1.Enabled = true;
+        //        return;
+        //    }
+
+        //    List<string> toEmails = myMail.GetEmailAddressesFromDatabaseTo("To", plantationCode);
+        //    if (toEmails.Count == 0)
+        //    {
+        //        MessageBox.Show("No recipients found for To.");
+        //        button1.Enabled = true;
+        //        return;
+        //    }
+
+        //    //  Show loading form
+        //    var loadingForm = new LoadingForm();
+        //    loadingForm.Show(this);
+        //    loadingForm.BringToFront();
+        //    loadingForm.Refresh();
+
+        //    bool success = false;
+
+        //    try
+        //    {
+        //        await Task.Run(() =>
         //        {
-        //            MessageBox.Show("No recipients found for To.");
-        //            button1.Enabled = true;
-        //        }
-        //        else if (ccEmails.Count == 0)
-        //        {
-        //            MessageBox.Show("No recipients found for CC.");
-        //            button1.Enabled = true;
-        //        }
-        //        else
-        //        {
-        //            if (cmbPlantation.Text.Trim() == "Bogawanthalawa Estate")
+        //            if (plantationName == "Bogawanthalawa Estate")
         //            {
-        //                //SendEmail(toEmails, ccEmails);
-        //                bool success = myMail.SendEmail(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
+        //                success = myMail.SendEmail(toEmails, selectedEmails, moduleName, lastVersion, plantationName, bodySubject);
         //                if (success)
         //                {
-        //                    myMail.UpdateLatestVersion(LastVersion, ModuleShortCode);
-        //                    MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //                    txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
-        //                    button1.Enabled = true;
-        //                    gvEmails.DataSource = myMail.ListAllCCMails();
-        //                    textBox2.Clear();
+        //                    myMail.UpdateLatestVersion(lastVersion, moduleShortCode);                          
+        //                    try
+        //                    {
+        //                        myMail.CreateLog($"{plantationName} {moduleName} Module Release", bodySubject, lastVersion, "NA", User.StatUserName, DateTime.Now);
+        //                    }
+        //                    catch { MessageBox.Show("Error on update Audit Log...!"); }
         //                }
-        //                else
+        //            }
+        //            else if (moduleName == "Checkroll" || moduleName == "BoughtLeaf" || moduleName == "Payroll" || moduleName == "Statutory")
+        //            {
+        //                success = myMail.SendEmailCheckroll(toEmails, selectedEmails, moduleName, latestBuild, plantationName, bodySubject);
+        //                if (success)
         //                {
-        //                    MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //                    button1.Enabled = true;
-        //                    gvEmails.DataSource = myMail.ListAllCCMails();
+        //                    myMail.UpdateLatestBuild(latestBuild, moduleShortCode);                          
+        //                    try
+        //                    {
+        //                        myMail.CreateLog($"{plantationName} {moduleName} Module Release", bodySubject, 0, latestBuild, User.StatUserName, DateTime.Now);
+        //                    }
+        //                    catch { MessageBox.Show("Error on update Audit Log...!"); }
         //                }
         //            }
         //            else
         //            {
-        //                if (ModuleName == "Checkroll" || ModuleName == "BoughtLeaf" || ModuleName == "Payroll" || ModuleName == "Statutory")
+        //                success = myMail.SendEmail(toEmails, selectedEmails, moduleName, lastVersion, plantationName, bodySubject);
+        //                if (success)
         //                {
-        //                    //SendEmail(toEmails, ccEmails);
-        //                    bool success = myMail.SendEmailCheckroll(toEmails, ccEmails, ModuleName, LatestBuild, PlantationName, BodySubject);
-        //                    if (success)
-        //                    {
-        //                        myMail.UpdateLatestBuild(LatestBuild, ModuleShortCode);
-        //                        MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //                        txtBuild.Text = myMail.getLastBuild(cmbModule.SelectedValue.ToString()).ToString();
-        //                        button1.Enabled = true;
-        //                        gvEmails.DataSource = myMail.ListAllCCMails();
-        //                        textBox2.Clear();
-        //                    }
-        //                    else
-        //                    {
-        //                        MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //                        button1.Enabled = true;
-        //                        gvEmails.DataSource = myMail.ListAllCCMails();
-        //                    }
+        //                    myMail.UpdateLatestVersion(lastVersion, moduleShortCode);
+
+        //try
+        //{
+        //    myMail.CreateLog($"{plantationName} {moduleName} Module Release", bodySubject, lastVersion, "NA", User.StatUserName, DateTime.Now);
+        //}
+        //catch { MessageBox.Show("Error on update Audit Log...!"); }
         //                }
-        //                else
-        //                {
-        //                    //SendEmail(toEmails, ccEmails);
-        //                    bool success = myMail.SendEmail(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
-        //                    if (success)
-        //                    {
-        //                        myMail.UpdateLatestVersion(LastVersion, ModuleShortCode);
-        //                        MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        //                        txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
-        //                        button1.Enabled = true;
-        //                        gvEmails.DataSource = myMail.ListAllCCMails();
-        //                        textBox2.Clear();
-        //                    }
-        //                    else
-        //                    {
-        //                        MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        //                        button1.Enabled = true;
-        //                        gvEmails.DataSource = myMail.ListAllCCMails();
-        //                    }
-        //                }
+        //                txtVersion.Text = myMail.getLastVersion(moduleShortCode).ToString("N2");
         //            }
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show("Error Occurred! Contact Yasas.\n" + ex.Message);
+        //    }
+        //    finally
+        //    {
+        //        //  Hide popup
+        //        loadingForm.Close();
+
+        //        //  Show message
+        //        if (success)
+        //        {
+        //            MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        //        }
+        //        else
+        //        {
+        //            MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         //        }
 
-        //    }
-        //    catch
-        //    {
-        //        MessageBox.Show("Error Occured..! Contact Yasas.");
+        //        // Refresh UI
         //        button1.Enabled = true;
+        //        textBox2.Clear();
         //        gvEmails.DataSource = myMail.ListAllCCMails();
+
         //    }
         //}
+
+
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            button1.Enabled = false;
+            try
+            {
+
+                String ModuleName = cmbModule.Text.Trim();
+                Decimal LastVersion = decimal.Parse(txtVersion.Text);
+                string PlantationName = cmbPlantation.Text.Trim();
+                String ModuleShortCode = cmbModule.SelectedValue.ToString();
+                String BodySubject = textBox2.Text;
+                String PlantationCode = cmbPlantation.SelectedValue.ToString();
+                String LatestBuild = txtBuild.Text.Trim();
+
+                List<string> selectedEmails = new List<string>();
+
+                foreach (DataGridViewRow row in gvEmails.Rows)
+
+
+
+                    if (!row.IsNewRow)
+                    {
+                        bool isChecked = Convert.ToBoolean(row.Cells["Sending CC"].Value);
+
+                        if (isChecked)
+                        {
+                            string email = row.Cells["Email"].Value?.ToString();
+                            if (!string.IsNullOrEmpty(email))
+                            {
+                                selectedEmails.Add(email);
+                            }
+                        }
+                    }
+
+
+                string result = string.Join(",", selectedEmails);
+                List<string> ccEmails = selectedEmails;
+
+                List<string> toEmails = myMail.GetEmailAddressesFromDatabaseTo("To", cmbPlantation.SelectedValue.ToString());   // Fetch To emails
+                //List<string> ccEmails = myMail.GetEmailAddressesFromDatabaseCC("CC");   // Fetch CC emails
+
+
+                if (string.IsNullOrWhiteSpace(textBox2.Text))
+                {
+                    MessageBox.Show("Email body can't be Empty.");
+                    button1.Enabled = true;
+                }
+                else if (toEmails.Count == 0)
+                {
+                    MessageBox.Show("No recipients found for To.");
+                    button1.Enabled = true;
+                }
+                else if (ccEmails.Count == 0)
+                {
+                    MessageBox.Show("No recipients found for CC.");
+                    button1.Enabled = true;
+                }
+                else
+                {
+                    if (cmbPlantation.Text.Trim() == "Bogawanthalawa Estate")
+                    {
+                        //SendEmail(toEmails, ccEmails);
+                        bool success = myMail.SendEmail(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
+                        if (success)
+                        {
+                            myMail.UpdateLatestVersion(LastVersion, ModuleShortCode);
+                            MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
+                            button1.Enabled = true;
+                            gvEmails.DataSource = myMail.ListAllCCMails();
+                            textBox2.Clear();
+                            try
+                            {
+                                myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DateTime.Now);
+                            }
+                            catch { MessageBox.Show("Error on update Audit Log...!"); }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            button1.Enabled = true;
+                            gvEmails.DataSource = myMail.ListAllCCMails();
+                        }
+                    }
+                    else
+                    {
+                        if (ModuleName == "Checkroll" || ModuleName == "BoughtLeaf" || ModuleName == "Payroll" || ModuleName == "Statutory")
+                        {
+                            //SendEmail(toEmails, ccEmails);
+                            bool success = myMail.SendEmailCheckroll(toEmails, ccEmails, ModuleName, LatestBuild, PlantationName, BodySubject);
+                            if (success)
+                            {
+                                myMail.UpdateLatestBuild(LatestBuild, ModuleShortCode);
+                                MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                txtBuild.Text = myMail.getLastBuild(cmbModule.SelectedValue.ToString()).ToString();
+                                button1.Enabled = true;
+                                gvEmails.DataSource = myMail.ListAllCCMails();
+                                textBox2.Clear();
+                                try
+                                {
+                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, 0, LatestBuild, User.StatUserName, DateTime.Now);
+                                }
+                                catch { MessageBox.Show("Error on update Audit Log...!"); }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                button1.Enabled = true;
+                                gvEmails.DataSource = myMail.ListAllCCMails();
+                            }
+                        }
+                        else
+                        {
+                            //SendEmail(toEmails, ccEmails);
+                            bool success = myMail.SendEmail(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
+                            if (success)
+                            {
+                                myMail.UpdateLatestVersion(LastVersion, ModuleShortCode);
+                                MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
+                                button1.Enabled = true;
+                                gvEmails.DataSource = myMail.ListAllCCMails();
+                                textBox2.Clear();
+                                try
+                                {
+                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DateTime.Now);
+                                }
+                                catch { MessageBox.Show("Error on update Audit Log...!"); }
+                            }
+                            else
+                            {
+                                MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                button1.Enabled = true;
+                                gvEmails.DataSource = myMail.ListAllCCMails();
+                            }
+                        }
+                    }
+                }
+
+            }
+            catch
+            {
+                MessageBox.Show("Error Occured..! Contact Yasas.");
+                button1.Enabled = true;
+                gvEmails.DataSource = myMail.ListAllCCMails();
+            }
+        }
 
         private void cmbSubject_SelectedIndexChanged(object sender, EventArgs e)
         {

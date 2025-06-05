@@ -38,6 +38,7 @@ namespace SendMails
             this.ClientSize = new System.Drawing.Size(192, 135);
             this.Name = "LoadingForm";
             this.Text = "LoadingForm";
+            this.Load += new System.EventHandler(this.LoadingForm_Load);
             this.ResumeLayout(false);
 
         }

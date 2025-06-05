@@ -20,10 +20,9 @@ namespace DataAccess
         public static string connectionstring()
         {
             //Yasas
-            strConnection = @"Data Source=YASAS\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
-
+            //strConnection = @"Data Source=YASAS\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
             //2005server
-            //strConnection = @"Data Source=VSRDPSERVER\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
+            strConnection = @"Data Source=VSRDPSERVER\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
             //Sarangi
             //strConnection = @"Data Source=DESKTOP-RG644LQ\SQLEXPRESS2019;Initial Catalog=EmailSettingsDB;Persist Security Info=True;User ID=sa;Password=pass1234;";
             //Ruwanji

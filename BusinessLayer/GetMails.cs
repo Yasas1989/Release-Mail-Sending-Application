@@ -13,8 +13,8 @@ namespace BusinessLayer
 {
     public class GetMails
     {
-        BusinessLayer.User myUser = new BusinessLayer.User();       
-     
+        BusinessLayer.User myUser = new BusinessLayer.User();
+        public String Description { get; set; }
         public DataSet ListPlantations(String LocationType)
         {
             DataSet ds = new DataSet();
@@ -158,7 +158,7 @@ namespace BusinessLayer
                     {
                         formatted.Append("<li>" + sentence.Trim() + "</li>");
                     }
-                    formatted.Append("</ul>"); // End list                 
+                    formatted.Append("</ul>"); // End list                                    
 
                     MailMessage mail = new MailMessage
                     {
@@ -225,7 +225,7 @@ namespace BusinessLayer
                     {
                         formatted.Append("<li>" + sentence.Trim() + "</li>");
                     }
-                    formatted.Append("</ul>"); // End list                 
+                    formatted.Append("</ul>"); // End list                                    
 
                     MailMessage mail = new MailMessage
                     {
@@ -264,6 +264,12 @@ namespace BusinessLayer
                 return false;
             }
         }
+
+        public void CreateLog(String ModuleName,String Description, Decimal Version, String Build,  String UserName, DateTime CreatedDateTime)
+        {
+            SQLHelper.ExecuteNonQuery("insert into AuditLog (ModuleName, Description, Version, Build, UserName, CreatedDateTime) values ('" + ModuleName + "','" + Description + "','" + Version + "','" + Build + "', '" + UserName + "', '" + CreatedDateTime + "')", CommandType.Text);
+        }
+
         public List<string> GetEmailAddressesFromDatabaseCC(string emailType)
         {
 
