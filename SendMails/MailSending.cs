@@ -40,25 +40,25 @@ namespace SendMails
 
             Panel headerPanel = new Panel();
             headerPanel.Dock = DockStyle.Top;
-            headerPanel.Height = 35;
+            headerPanel.Height = 27;
             headerPanel.BackColor = Color.Orange;
             this.Controls.Add(headerPanel);
 
             Panel leftGreenPanel = new Panel();
             leftGreenPanel.Dock = DockStyle.Left;
-            leftGreenPanel.Width = 5; // Adjust thickness
+            leftGreenPanel.Width = 1; // Adjust thickness
             leftGreenPanel.BackColor = Color.Orange;
             this.Controls.Add(leftGreenPanel);
 
             Panel rightGreenPanel = new Panel();
             rightGreenPanel.Dock = DockStyle.Right;
-            rightGreenPanel.Width = 5; // Adjust thickness
+            rightGreenPanel.Width = 1; // Adjust thickness
             rightGreenPanel.BackColor = Color.Orange;
             this.Controls.Add(rightGreenPanel);
 
             Panel footerPanel = new Panel();
             footerPanel.Dock = DockStyle.Bottom;
-            footerPanel.Height = 5;
+            footerPanel.Height = 1;
             footerPanel.BackColor = Color.Orange;
             this.Controls.Add(footerPanel);
 
@@ -74,12 +74,12 @@ namespace SendMails
             label5.BackColor = Color.Orange;
             label5.ForeColor = Color.Black;
             label5.Font = new Font("Tahoma", 8, FontStyle.Bold);
-            title.Location = new Point(20, 04);
+            title.Location = new Point(20, 05);
 
             Button btnMin = new Button();
             btnMin.Text = "—";
             btnMin.ForeColor = Color.Red;
-            btnMin.BackColor = Color.AliceBlue;
+            btnMin.BackColor = Color.AntiqueWhite;
             btnMin.FlatStyle = FlatStyle.Flat;
             btnMin.FlatAppearance.BorderSize = 0;
             btnMin.Size = new Size(30, 25);
@@ -92,7 +92,7 @@ namespace SendMails
             Button btnClose = new Button();
             btnClose.Text = "✖";
             btnClose.ForeColor = Color.Red;
-            btnClose.BackColor = Color.AliceBlue;
+            btnClose.BackColor = Color.AntiqueWhite;
             btnClose.FlatStyle = FlatStyle.Flat;
             btnClose.FlatAppearance.BorderSize = 0;
             btnClose.Size = new Size(30, 25);
@@ -273,6 +273,7 @@ namespace SendMails
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            Application.DoEvents();
             button1.Enabled = false;
             try
             {
@@ -336,13 +337,16 @@ namespace SendMails
                 }
                 else
                 {
+                    
                     if (cmbPlantation.Text.Trim() == "Bogawanthalawa Estate")
                     {
+                        Application.DoEvents();
                         //SendEmail(toEmails, ccEmails);
                         bool success = myMail.SendEmail(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
                         if (success)
                         {
                             myMail.UpdateLatestVersion(LastVersion, ModuleShortCode);
+                            Application.DoEvents();
                             MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
                             button1.Enabled = true;
@@ -354,23 +358,29 @@ namespace SendMails
                                 myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DevDoneBy, DateTime.Now);
                             }
                             catch { MessageBox.Show("Error on update Audit Log...!"); }
+                            
                         }
+                        
                         else
                         {
                             MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             button1.Enabled = true;
                             gvEmails.DataSource = myMail.ListAllCCMails();
                         }
+                        
                     }
                     else
                     {
+                        Application.DoEvents();
                         if (ModuleName == "Checkroll" || ModuleName == "BoughtLeaf" || ModuleName == "Payroll" || ModuleName == "Statutory")
                         {
+                            Application.DoEvents();
                             //SendEmail(toEmails, ccEmails);
                             bool success = myMail.SendEmailCheckroll(toEmails, ccEmails, ModuleName, LatestBuild, PlantationName, BodySubject);
                             if (success)
                             {
                                 myMail.UpdateLatestBuild(LatestBuild, ModuleShortCode);
+                                Application.DoEvents();
                                 MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 txtBuild.Text = myMail.getLastBuild(cmbModule.SelectedValue.ToString()).ToString();
                                 button1.Enabled = true;
@@ -382,21 +392,26 @@ namespace SendMails
                                     myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, 0, LatestBuild, User.StatUserName, DevDoneBy, DateTime.Now);
                                 }
                                 catch { MessageBox.Show("Error on update Audit Log...!"); }
+                                
                             }
+                           
                             else
                             {
                                 MessageBox.Show("Failed to send email.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                                 button1.Enabled = true;
                                 gvEmails.DataSource = myMail.ListAllCCMails();
                             }
+                            
                         }
                         else
                         {
+                            Application.DoEvents();
                             //SendEmail(toEmails, ccEmails);
                             bool success = myMail.SendEmail(toEmails, ccEmails, ModuleName, LastVersion, PlantationName, BodySubject);
                             if (success)
                             {
                                 myMail.UpdateLatestVersion(LastVersion, ModuleShortCode);
+                                Application.DoEvents();
                                 MessageBox.Show("Email sent successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 txtVersion.Text = myMail.getLastVersion(cmbModule.SelectedValue.ToString()).ToString("N2");
                                 button1.Enabled = true;
@@ -408,6 +423,7 @@ namespace SendMails
                                     myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DevDoneBy, DateTime.Now);
                                 }
                                 catch { MessageBox.Show("Error on update Audit Log...!"); }
+                                
                             }
                             else
                             {
@@ -516,7 +532,7 @@ namespace SendMails
         {
 
         }
-
+       
         private void label4_Click(object sender, EventArgs e)
         {
 

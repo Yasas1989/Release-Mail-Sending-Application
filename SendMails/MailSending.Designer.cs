@@ -50,6 +50,8 @@ namespace SendMails
             this.label7 = new System.Windows.Forms.Label();
             this.JobDone = new System.Windows.Forms.ComboBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvEmails)).BeginInit();
             this.SuspendLayout();
@@ -147,7 +149,7 @@ namespace SendMails
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(658, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(658, 30);
             this.menuStrip1.TabIndex = 15;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -238,11 +240,30 @@ namespace SendMails
             this.label8.Text = "Development Done by  -";
             this.label8.Click += new System.EventHandler(this.label8_Click);
             // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(112, 567);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(5);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(342, 22);
+            this.progressBar1.TabIndex = 55;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(21, 567);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(69, 17);
+            this.label9.TabIndex = 56;
+            this.label9.Text = "Sending -";
+            // 
             // MailSending
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(658, 602);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.JobDone);
             this.Controls.Add(this.label7);
@@ -295,6 +316,8 @@ namespace SendMails
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.ComboBox JobDone;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ProgressBar progressBar1;
     }
 }
 
