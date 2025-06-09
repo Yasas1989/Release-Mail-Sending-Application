@@ -355,7 +355,8 @@ namespace SendMails
                             JobDone.SelectedIndex = -1;
                             try
                             {
-                                myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DevDoneBy, DateTime.Now);
+                               
+                                myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DevDoneBy, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
                             }
                             catch { MessageBox.Show("Error on update Audit Log...!"); }
                             
@@ -389,7 +390,7 @@ namespace SendMails
                                 JobDone.SelectedIndex = -1;
                                 try
                                 {
-                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, 0, LatestBuild, User.StatUserName, DevDoneBy, DateTime.Now);
+                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, 0, LatestBuild, User.StatUserName, DevDoneBy, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
                                 }
                                 catch { MessageBox.Show("Error on update Audit Log...!"); }
                                 
@@ -420,7 +421,7 @@ namespace SendMails
                                 JobDone.SelectedIndex = -1;
                                 try
                                 {
-                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DevDoneBy, DateTime.Now);
+                                    myMail.CreateLog($"{PlantationName} {ModuleName} Module Release", BodySubject, LastVersion, "NA", User.StatUserName, DevDoneBy, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"));
                                 }
                                 catch { MessageBox.Show("Error on update Audit Log...!"); }
                                 
